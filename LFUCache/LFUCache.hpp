@@ -11,10 +11,10 @@
 template<typename Key, typename Value>
 class LFUCache {
 public : 
-    explicit LFUCache(std::size_t capcacity) noexcept :
+    explicit LFUCache(std::size_t capacity) noexcept :
         buckets_{},
         map_{},
-        capacity_{capcacity} 
+        capacity_{capacity} 
     {}
 
     LFUCache(const LFUCache& other) = delete;
