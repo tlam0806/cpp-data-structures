@@ -1,16 +1,20 @@
 #pragma once
-#include<list>
 #include <cassert>
-#include <iostream>
-#include<optional>
+#include <cstddef>
+#include <iterator>
+#include <list>
+#include <optional>
+#include <tuple>
+#include <unordered_map>
+#include <utility>
 
 template<typename Key, typename Value>
 class LFUCache {
-public :
+public : 
     explicit LFUCache(std::size_t capcacity) noexcept :
         buckets_{},
         map_{},
-        capacity_{capcacity}
+        capacity_{capcacity} 
     {}
 
     LFUCache(const LFUCache& other) = delete;
@@ -43,7 +47,7 @@ public :
         return list_it->second;
     }
 
-    template<typename KeyInput, typename ValueInput>
+    template<typename KeyInput, typename ValueInput> 
     void put(KeyInput&& key, ValueInput&& value) {
         if (capacity_ == 0) {
             return;
@@ -73,11 +77,11 @@ public :
         }
     }
 
-private :
+private : 
     struct Bucket {
         std::list<std::pair<const Key&, Value> > list_;
         std::size_t frequency_;
-        explicit Bucket(std::size_t frequency) : list_{}, frequency_{frequency} {}
+        explicit Bucket(std::size_t frequency) : list_{}, frequency_{frequency} {} 
     };
 
     using ListIt = typename std::list<std::pair<const Key&, Value> >::iterator;
@@ -102,7 +106,7 @@ private :
         if (map_.size() < capacity_) return;
         auto bucket_it = buckets_.begin();
         assert(!bucket_it->list_.empty());
-        auto &[key, value] = bucket_it->list_.front();
+        auto &[key, value] = bucket_it->list_.front(); 
         map_.erase(key);
         bucket_it->list_.pop_front();
         if (bucket_it->list_.empty()) {

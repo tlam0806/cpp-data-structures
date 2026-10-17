@@ -3,6 +3,7 @@
 
 #include <cerrno>
 #include <cstdlib>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
