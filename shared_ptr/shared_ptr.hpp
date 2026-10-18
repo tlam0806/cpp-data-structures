@@ -4,6 +4,7 @@
 #include <utility>
 #include <memory>
 
+namespace lam {
 namespace detail {
 template<typename T>
 struct default_deleter {
@@ -331,3 +332,5 @@ shared_ptr<T> make_shared(Args&&... args) {
     detail::InplaceControlBlock<T>* ctrl = new detail::InplaceControlBlock<T>(std::forward<Args>(args)...);
     return shared_ptr(ctrl->get_storage(), ctrl, std::false_type{});
 }
+
+} // namespace lam

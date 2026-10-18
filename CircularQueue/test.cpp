@@ -22,6 +22,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+using lam::CircularQueue;
+
 namespace {
 
 [[noreturn]] void fail(std::string_view check,

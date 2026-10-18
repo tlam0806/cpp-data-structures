@@ -5,8 +5,7 @@
 #include <utility>
 #include <limits>
 
-
-
+namespace lam {
 template<typename T>
 class CircularQueue {
 public : 
@@ -271,3 +270,5 @@ private :
 
 
 };
+
+} // namespace lam

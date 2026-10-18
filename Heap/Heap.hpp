@@ -2,6 +2,7 @@
 #include<vector>
 #include <cassert>
 
+namespace lam {
 template<
     typename T,
     std::size_t B = 2,
@@ -93,3 +94,5 @@ private :
     Container container_;
     Compare compare_;
 };
+
+} // namespace lam

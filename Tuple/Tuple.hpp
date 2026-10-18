@@ -2,7 +2,7 @@
 #include<cstddef>
 #include<utility>
 
-
+namespace lam {
 template<std::size_t I, typename T, typename... Args>
 struct type_at {
     static_assert(I < sizeof...(Args) + 1);
@@ -100,3 +100,5 @@ public :
         return false;
     }
 };
+
+} // namespace lam

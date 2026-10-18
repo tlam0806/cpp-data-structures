@@ -4,6 +4,7 @@
 #include<vector>
 #include<cassert>
 
+namespace lam {
 inline constexpr std::size_t CACHE_SIZE = std::hardware_constructive_interference_size;
 
 template<
@@ -295,3 +296,5 @@ private :
     std::size_t offset_;
     std::size_t element_count_;
 };
+
+} // namespace lam

@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <type_traits>
 
+namespace lam {
 template <class T>
 class Vector {
 public:
@@ -445,3 +446,5 @@ private:
         return std::max(capacity_ + 1, capacity_ * 2);
     }
 };
+
+} // namespace lam

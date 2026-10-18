@@ -1,6 +1,7 @@
 #pragma once
 #include<utility>
 
+namespace lam {
 template<typename T>
 struct default_deleter {
     void operator()(T* pointer) const noexcept {
@@ -133,3 +134,5 @@ unique_ptr<T> make_unique(std::size_t count) {
         new Element[count]{}
     };
 }
+
+} // namespace lam

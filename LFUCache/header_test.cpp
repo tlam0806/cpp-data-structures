@@ -2,6 +2,8 @@
 #include "LFUCache.hpp"
 #include "LFUCache.hpp"
 
+using lam::LFUCache;
+
 int main() {
     LFUCache<int, int> cache(1);
     cache.put(1, 2);

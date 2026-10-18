@@ -10,6 +10,8 @@
 #include <tuple>
 #include <utility>
 
+using lam::Tuple;
+
 namespace {
 
 [[noreturn]] void fail(std::string_view check, std::size_t iteration) {

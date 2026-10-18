@@ -10,6 +10,8 @@
 #include <random>
 #include <vector>
 
+using lam::Heap;
+
 namespace {
 
 using CustomHeap2 = Heap<int, 2>;

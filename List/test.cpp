@@ -18,6 +18,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+using lam::List;
+
 static_assert(
     std::is_same_v<
         decltype(std::declval<List<int>&>() = std::declval<const List<int>&>()),

@@ -30,6 +30,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+using lam::HashMap;
+
 namespace {
 
 struct CrashContext {

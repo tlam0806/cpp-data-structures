@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <utility>
 
+namespace lam {
 template<typename Key, typename Value>
 class LFUCache {
 public : 
@@ -118,3 +119,5 @@ private :
     std::unordered_map<Key, std::pair<BucketIt, ListIt>> map_;
     std::size_t capacity_;
 };
+
+} // namespace lam

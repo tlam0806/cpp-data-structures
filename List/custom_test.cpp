@@ -1,6 +1,8 @@
 #include <iostream>
 #include "List.hpp"
 
+using lam::List;
+
 struct A {
     ~A() {
         std::cout << "destroying\n";

@@ -10,6 +10,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+using lam::LFUCache;
+
 namespace {
 void check(bool result, const char* message) {
     if (!result) throw std::runtime_error(message);

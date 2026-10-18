@@ -26,6 +26,8 @@
 #include <unordered_set>
 #include <utility>
 
+using lam::RobinHood;
+
 namespace {
 
 [[noreturn]] void fail(

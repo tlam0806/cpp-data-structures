@@ -11,6 +11,7 @@
 #include<utility>
 #include<stdexcept>
 
+namespace lam {
 template<class Key, class Value, class Hash>
 concept RobinHoodCompatible =
     std::is_nothrow_move_constructible_v<std::pair<Key, Value>> &&
@@ -388,3 +389,5 @@ private :
     std::size_t element_size_;
     Hash hasher_;
 };
+
+} // namespace lam

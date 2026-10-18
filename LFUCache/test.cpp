@@ -19,6 +19,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+using lam::LFUCache;
+
 namespace {
 
 #define CHECK(expression) do { \

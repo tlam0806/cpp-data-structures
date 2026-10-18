@@ -21,6 +21,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+using lam::shared_ptr;
+using lam::weak_ptr;
+
 #ifndef ONLY_TEST
 #define ENABLE(n) 1
 #else
@@ -497,8 +500,8 @@ static_assert(!std::is_constructible_v<shared_ptr<Tracked>, Tracked*, int>,
 static_assert(!std::is_constructible_v<shared_ptr<Tracked>, Tracked*, void (*)(int*)>,
               "a deleter that can't take U* must be rejected");
 static_assert(std::is_constructible_v<shared_ptr<Tracked>, Tracked*, CountingDeleter>);
-static_assert(sizeof(detail::ControlBlockFor<int, EmptyDeleter>) ==
-              sizeof(detail::ControlBlockFor<int>),
+static_assert(sizeof(lam::detail::ControlBlockFor<int, EmptyDeleter>) ==
+              sizeof(lam::detail::ControlBlockFor<int>),
               "an empty deleter must not make the control block bigger");
 void deleter_compile_time_api() {}
 #endif
@@ -884,7 +887,7 @@ struct Forwarded {
 };
 
 #if ENABLE(52)
-static_assert(std::is_same_v<decltype(::make_shared<Tracked>(1)), shared_ptr<Tracked>>,
+static_assert(std::is_same_v<decltype(lam::make_shared<Tracked>(1)), shared_ptr<Tracked>>,
               "make_shared<T> returns shared_ptr<T>");
 void make_shared_compile_time_api() {}
 #endif
@@ -892,7 +895,7 @@ void make_shared_compile_time_api() {}
 #if ENABLE(53)
 void make_shared_constructs_object() {
     {
-        auto p = ::make_shared<Tracked>(7);
+        auto p = lam::make_shared<Tracked>(7);
         equal(p->id, 7, "constructor arguments forwarded");
         equal(Tracked::alive, 1, "one object constructed");
         equal(p.use_count(), std::size_t{1}, "make_shared result has exactly one owner");
@@ -906,7 +909,7 @@ void make_shared_single_allocation() {
     long before_total = total_allocations;
     long before_live = live_allocations;
     {
-        auto p = ::make_shared<Tracked>(1);
+        auto p = lam::make_shared<Tracked>(1);
         equal(total_allocations - before_total, 1L, "object and control block share one allocation");
     }
     equal(live_allocations - before_live, 0L, "the combined block is freed");
@@ -916,7 +919,7 @@ void make_shared_single_allocation() {
 #if ENABLE(55)
 void make_shared_forwards_arguments() {
     int x = 1;
-    auto p = ::make_shared<Forwarded>(x, std::make_unique<int>(5));
+    auto p = lam::make_shared<Forwarded>(x, std::make_unique<int>(5));
     CHECK(&p->ref == &x);   // lvalue stays an lvalue reference
     equal(*p->owned, 5, "move-only argument forwarded as rvalue");
 }
@@ -924,7 +927,7 @@ void make_shared_forwards_arguments() {
 
 #if ENABLE(56)
 void make_shared_respects_alignment() {
-    auto p = ::make_shared<Aligned>();
+    auto p = lam::make_shared<Aligned>();
     equal(reinterpret_cast<std::uintptr_t>(p.get()) % alignof(Aligned), std::uintptr_t{0},
           "object is correctly aligned inside the control block");
 }
@@ -935,7 +938,7 @@ void make_shared_throwing_constructor() {
     long before_live = live_allocations;
     bool threw = false;
     try {
-        auto p = ::make_shared<ThrowsOnConstruct>(1);
+        auto p = lam::make_shared<ThrowsOnConstruct>(1);
     } catch (const std::runtime_error&) {
         threw = true;
     }
@@ -951,7 +954,7 @@ void make_shared_with_weak_ptr() {
     {
         weak_ptr<Tracked> w;
         {
-            auto p = ::make_shared<Tracked>(1);
+            auto p = lam::make_shared<Tracked>(1);
             w = p;
         }
         equal(Tracked::destroyed, 1, "object destroyed when the last shared_ptr dies");
@@ -965,7 +968,7 @@ void make_shared_with_weak_ptr() {
 #if ENABLE(59)
 void make_shared_converts_to_base() {
     {
-        shared_ptr<Base> b = ::make_shared<Derived>();
+        shared_ptr<Base> b = lam::make_shared<Derived>();
         equal(b.use_count(), std::size_t{1}, "one owner after conversion");
     }
     equal(Derived::destroyed, 1, "~Derived runs");

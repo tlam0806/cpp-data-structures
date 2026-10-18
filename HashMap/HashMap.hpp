@@ -5,6 +5,8 @@
 #include<memory>
 #include<algorithm>
 #include<utility>
+
+namespace lam {
 template<
     typename Key, 
     typename Value,
@@ -397,3 +399,5 @@ private :
     std::size_t element_count_;
     Hash hasher_;
 };
+
+} // namespace lam

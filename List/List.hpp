@@ -4,6 +4,7 @@
 #include<cassert>
 #include <iostream>
 
+namespace lam {
 template<typename T>
 class List {
 private : 
@@ -257,3 +258,5 @@ private :
 
     
 };
+
+} // namespace lam

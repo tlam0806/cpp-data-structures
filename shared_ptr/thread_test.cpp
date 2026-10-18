@@ -17,6 +17,9 @@
 #include <thread>
 #include <vector>
 
+using lam::shared_ptr;
+using lam::weak_ptr;
+
 // Counts live heap allocations, to check control blocks are freed exactly once.
 static std::atomic<long> live_allocations{0};
 
@@ -69,7 +72,7 @@ struct Payload {
 // Alternate both control block kinds: separate allocation and make_shared's inline block.
 shared_ptr<Payload> make_payload(int iteration) {
     if (iteration % 2 == 0) return shared_ptr<Payload>(new Payload);
-    return ::make_shared<Payload>();
+    return lam::make_shared<Payload>();
 }
 
 void spin_until(const std::atomic<bool>& go) {
@@ -83,7 +86,7 @@ void spin_until(const std::atomic<bool>& go) {
 void concurrent_copies() {
     long before = live_allocations.load();
     {
-        auto p = ::make_shared<Payload>();
+        auto p = lam::make_shared<Payload>();
         std::atomic<bool> go{false};
         std::vector<std::thread> threads;
         for (int t = 0; t < 8; ++t) {
@@ -194,7 +197,7 @@ void last_shared_and_weak_die_together() {
 void concurrent_weak_copies_and_locks() {
     long before = live_allocations.load();
     {
-        auto p = ::make_shared<Payload>();
+        auto p = lam::make_shared<Payload>();
         weak_ptr<Payload> w(p);
         std::atomic<bool> go{false};
         std::vector<std::thread> threads;

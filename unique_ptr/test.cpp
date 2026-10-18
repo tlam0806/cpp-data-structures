@@ -17,6 +17,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+using lam::unique_ptr;
+
 namespace {
 const char* current_test = "";
 
@@ -95,7 +97,7 @@ static_assert(std::is_same_v<decltype(std::declval<Owner&>() = std::declval<Owne
 
 void basic_ownership() {
     {
-        auto p = ::make_unique<Tracked>(1);
+        auto p = lam::make_unique<Tracked>(1);
         CHECK(static_cast<bool>(p));
         equal(p.get()->id, 1, "make_unique forwards constructor argument");
         equal(Tracked::alive, 1, "one owned object");
@@ -120,7 +122,7 @@ void forwarding() {
     };
     int value = 7;
     auto resource = std::make_unique<int>(42);
-    auto p = ::make_unique<Payload>(value, std::move(resource));
+    auto p = lam::make_unique<Payload>(value, std::move(resource));
     CHECK(!resource);
     CHECK(&p.get()->reference == &value);
     equal(*p.get()->resource, 42, "move-only constructor argument preserved");
@@ -129,7 +131,7 @@ void forwarding() {
 void throwing_constructor() {
     struct Throws { Throws() { throw std::runtime_error("injected failure"); } };
     bool caught = false;
-    try { auto p = ::make_unique<Throws>(); }
+    try { auto p = lam::make_unique<Throws>(); }
     catch (const std::runtime_error&) { caught = true; }
     CHECK(caught);
 }
@@ -309,7 +311,7 @@ struct ArrayElement {
 };
 
 void array_value_initialization() {
-    auto p = ::make_unique<int[]>(32);
+    auto p = lam::make_unique<int[]>(32);
     for (int i = 0; i < 32; ++i) equal(p[i], 0, "integer array is zero initialized");
     const auto& view = p;
     for (int i = 0; i < 32; ++i) view[i] = i * 3;
@@ -318,7 +320,7 @@ void array_value_initialization() {
 
 void array_destruction() {
     {
-        auto p = ::make_unique<ArrayElement[]>(5);
+        auto p = lam::make_unique<ArrayElement[]>(5);
         equal(ArrayElement::alive, 5, "all array elements constructed");
         for (int i = 0; i < 5; ++i) equal(p[i].value, 17, "class default constructor runs");
     }
@@ -329,7 +331,7 @@ void array_destruction() {
 void array_throwing_constructor() {
     ArrayElement::throw_at = 3;
     bool threw = false;
-    try { auto p = ::make_unique<ArrayElement[]>(8); }
+    try { auto p = lam::make_unique<ArrayElement[]>(8); }
     catch (const std::runtime_error&) { threw = true; }
     CHECK(threw);
     equal(ArrayElement::alive, 0, "failed array construction cleans up earlier elements");
@@ -338,12 +340,12 @@ void array_throwing_constructor() {
 
 void array_move_and_reset() {
     {
-        auto source = ::make_unique<ArrayElement[]>(3);
+        auto source = lam::make_unique<ArrayElement[]>(3);
         auto* address = source.get();
         auto moved = std::move(source);
         CHECK(!source);
         CHECK(moved.get() == address);
-        auto destination = ::make_unique<ArrayElement[]>(2);
+        auto destination = lam::make_unique<ArrayElement[]>(2);
         destination = std::move(moved);
         CHECK(!moved);
         CHECK(destination.get() == address);
@@ -359,7 +361,7 @@ void array_move_and_reset() {
 }
 
 void array_release() {
-    auto p = ::make_unique<ArrayElement[]>(3);
+    auto p = lam::make_unique<ArrayElement[]>(3);
     auto* raw = p.release();
     CHECK(!p);
     CHECK(p.release() == nullptr);
@@ -369,7 +371,7 @@ void array_release() {
 }
 
 void array_zero_length() {
-    { auto p = ::make_unique<ArrayElement[]>(0); }
+    { auto p = lam::make_unique<ArrayElement[]>(0); }
     equal(ArrayElement::attempts, 0, "zero-length array constructs no elements");
     equal(ArrayElement::destroyed, 0, "zero-length array destroys no elements");
     // The allocation may return a non-null pointer; do not assert !p.
